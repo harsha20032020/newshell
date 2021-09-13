@@ -6,15 +6,21 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <libgen.h>
-
-#include "./display/name.c"
-int main ()
+#define LINE_LENGTH 1024
+#include "./utilities/name.h"
+#include "./utilities/parser.h"
+#include "./utilities/execute.h"
+int main()
 {
     //printdir();
-    
-    //while(1)
+    while(1)
     {
-        username();
-        echo("im a noob");
+        username();                           //prints the default prompt message
+        readcmd();
+        // size_t characters = getline(string_pointer, &size, stdin);
+        // printf("You typed: %s", string);
+        //splitcommands(string);
+        //printf("%s\n", path);
+        //printpath();
     }
 }

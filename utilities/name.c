@@ -7,25 +7,37 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <sys/utsname.h>
+#include "name.h"
+#define MAX_LINE_LENGTH 1024
+
 void printdir()
 {
     char cwd[1024];
     getcwd(cwd, sizeof(cwd));
     printf("Dir: %s\n", cwd);
 }
+
+// this function prints the command prompt or harsh@harsh-VivoBook-ASUSLaptop-X532FLC-S532FL:
 int username()
 {
-    char *username = getenv("USER");
-    //printf("User: %s\n", username);
     struct utsname uts;
     if (uname(&uts) != 0)
     {
         return EXIT_FAILURE;
     }
-    //printf("%s\n", uts.nodename);
-    strcat(username, "@");
-    strcat(username, uts.nodename);
-    printf("%s: ", username);
+    printf("\033[1;31m"); 
+    printf("%s@%s: ", getenv("USER"),uts.nodename);
+    printf("\033[0m");
+    return EXIT_SUCCESS;
+}
+int printpath()
+{
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    printf("\033[1;31m");
+    printf("%s\n", cwd); 
+    printf("%s\n", basename(cwd));
+    printf("\033[0m");
     return EXIT_SUCCESS;
 }
 void echo(char *str)
