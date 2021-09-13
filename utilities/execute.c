@@ -45,8 +45,9 @@ void cdcommand(char *command[100], int len)
     strcat(currentdir,command[1]);
     if (chdir(currentdir) == 0)
     {
-        printf("cd successful\n");
-        printf("%s\n", currentdir);
+        //printf("cd successful\n");
+        //printf("%s\n", currentdir);
+        //printf("%s\n",basename(currentdir));
     }
     else
     {

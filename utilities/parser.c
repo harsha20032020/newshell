@@ -20,7 +20,7 @@ char *readcmd()
 		printf("Error. Please give input correctly.");
 		return readcmd();
 	}
-	printf("You typed: %s", string);
+	//printf("You typed: %s", string);
 	stringsplitter(string);
 	return string;
 }
