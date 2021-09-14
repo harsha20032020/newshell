@@ -62,3 +62,15 @@ void foreground(char *command[100], int len)
         } while (!WIFEXITED(status) && !WIFSIGNALED(status)); //wait until child process is done
     }
 }
+void child()
+{
+    //https://stackoverflow.com/questions/4200373/just-check-status-process-in-c
+	int status;
+	pid_t pid;
+	pid = waitpid(-1, &status, WNOHANG);
+	if (pid > 0)
+	{
+		fprintf(stderr, "pid %d exited Normally\n", pid);
+        fflush(stderr);
+	}
+}

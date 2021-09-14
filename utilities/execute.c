@@ -20,6 +20,7 @@ void executioner(char *command[100], int len)
 {
     char currentdir[PATH_MAX];
     getcwd(currentdir, sizeof(currentdir));
+    child();
     if (strcmp(command[0], "echo") == 0)
     {
         echocommand(command, len);
@@ -33,6 +34,11 @@ void executioner(char *command[100], int len)
     else if (strcmp(command[0], "cd") == 0)
     {
         cdcommand(command, len);
+    }
+    else if (strcmp(command[0], "repeat") == 0)
+    {
+        int n=atoi(command[1]);   
+        repeat(command, n, len);
     }
     else
     {
@@ -103,5 +109,17 @@ void processes(char *command[100], int len)
     else
     {
         foreground(command,len);
+    }
+}
+void repeat(char *commands[100],int n,int len)
+{
+    char *newstring[100];
+    for(int i=2;i<len;i++)
+    {
+        newstring[i-2]=commands[i];
+    }
+    for(int i=0;i<n;i++)
+    {
+        executioner(newstring,len-2);
     }
 }
