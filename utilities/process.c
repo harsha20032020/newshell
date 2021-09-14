@@ -74,3 +74,4 @@ void child()
         fflush(stderr);
 	}
 }
+// idk why but looks and runs perfect ig
