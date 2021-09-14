@@ -16,10 +16,11 @@ int main()
     //printdir();
     char *initial_dir = getcwd(NULL, 0);
     int initiallen = strlen(initial_dir);
-    while(1)
+    while (1)
     {
         //printf("%s\n", initial_dir);
-        username(initiallen);                           //prints the default prompt message
+        usleep(1e5);
+        username(initiallen); //prints the default prompt message
         readcmd();
         // size_t characters = getline(string_pointer, &size, stdin);
         // printf("You typed: %s", string);

@@ -7,8 +7,12 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <sys/utsname.h>
+#include <time.h>
 #include "execute.h"
+#include "name.h"
 #include <limits.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 void executioner(char *command[100], int len)
 {
@@ -20,13 +24,17 @@ void executioner(char *command[100], int len)
     }
     else if (strcmp(command[0], "pwd") == 0)
     {
-        printf("\033[0;33m"); 
+        printf("\033[0;33m");
         printf("%s\n", currentdir);
         printf("\033[0m");
     }
     else if (strcmp(command[0], "cd") == 0)
     {
         cdcommand(command, len);
+    }
+    else
+    {
+        processes(command, len);
     }
 }
 void echocommand(char *command[100], int len)
@@ -41,16 +49,69 @@ void cdcommand(char *command[100], int len)
 {
     char currentdir[PATH_MAX];
     getcwd(currentdir, sizeof(currentdir));
-    strcat(currentdir, "/");
-    strcat(currentdir,command[1]);
-    if (chdir(currentdir) == 0)
+    char prev[PATH_MAX];
+    /*fail if prev is NULL, do something*/
+    //printf("%s\n",prev);
+    if (command[1][0] == '~')
     {
-        //printf("cd successful\n");
-        //printf("%s\n", currentdir);
-        //printf("%s\n",basename(currentdir));
+        char *home = getenv("HOME");
+        strcpy(currentdir, home);
+        if (chdir(home) == 0)
+        {
+        }
+        else
+        {
+            printf("cd: %s: No such file or directory\n", command[1]);
+        }
+    }
+    else if (command[1][0] == '-')
+    {
+        if (chdir(prev) == 0)
+        {
+            printf("1:%s\n2:%s\n", prev, currentdir);
+        }
+        else
+        {
+            printf("cd: %s: No such file or directory\n", command[1]);
+        }
     }
     else
     {
-        printf("cd failed\n");
+        strcat(currentdir, "/");
+        strcat(currentdir, command[1]);
+        if (chdir(currentdir) == 0)
+        {
+            //printf("cd successful\n");
+            //printf("%s\n", currentdir);
+            //printf("%s\n",basename(currentdir));
+        }
+        else
+        {
+            printf("cd: %s: No such file or directory\n", command[1]);
+        }
+    }
+    strcpy(prev, currentdir);
+}
+void processes(char *command[100], int len)
+{
+    if (command[len - 1][0] == '&')
+    {
+        command[len - 1] = NULL;
+        pid_t pid, newpid;
+        pid = fork();
+        if(pid!=0)
+        {
+            printf("%d\n",pid);
+        }
+        if (pid == 0)
+        {
+            //newpid = getpid();
+            //printf("%d\n", newpid);
+            if (execvp(command[0], command) == -1)
+            {
+                perror("lsh");
+            }
+            exit(EXIT_FAILURE);
+        }
     }
 }
