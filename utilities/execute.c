@@ -13,6 +13,7 @@
 #include <limits.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 void executioner(char *command[100], int len)
 {
@@ -99,19 +100,46 @@ void processes(char *command[100], int len)
         command[len - 1] = NULL;
         pid_t pid, newpid;
         pid = fork();
-        if(pid!=0)
+        if (pid != 0)
         {
-            printf("%d\n",pid);
+            printf("%d\n", pid);
         }
         if (pid == 0)
         {
             //newpid = getpid();
             //printf("%d\n", newpid);
-            if (execvp(command[0], command) == -1)
+            if (execvp(command[0], command) == -1) //runs the command
             {
-                perror("lsh");
+                perror("Error At Background Pocesses");
             }
-            exit(EXIT_FAILURE);
+            exit(1); 
+        }
+    }
+    else
+    {
+        int status;   //status of the process
+        pid_t pid, newpid; //pid of the process
+        pid = fork();   //forking the process
+        // if (pid != 0)
+        // {
+        //     printf("%d\n", pid);
+        // }
+        if (pid == 0)
+        {
+            //newpid = getpid();
+            //printf("%d\n", newpid);
+            if (execvp(command[0], command) == -1) //command[0] is the name of the program
+            {
+                perror("Error At Background Pocesses");
+            }
+            exit(1);
+        }
+        else
+        {
+            do
+            {
+                waitpid(pid, &status, WUNTRACED); //wait for child process to finish
+            } while (!WIFEXITED(status) && !WIFSIGNALED(status)); //wait until child process is done
         }
     }
 }
