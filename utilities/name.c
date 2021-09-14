@@ -43,6 +43,8 @@ int username(int n)
     }
     printf("\033[1;31m");
     printf("%s@%s:~", getenv("USER"), uts.nodename);
+    printf("\033[0m");
+    printf("\033[1;34m");
     printstr(cwd, n, strlen(cwd));
     printf("\033[0m");
     return EXIT_SUCCESS;
