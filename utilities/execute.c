@@ -44,6 +44,7 @@ void executioner(char *command[100], int len)
     {
         processes(command, len);
     }
+    //free(command);
 }
 void echocommand(char *command[100], int len)
 {

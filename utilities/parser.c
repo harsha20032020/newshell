@@ -32,6 +32,7 @@ void stringsplitter(char str[LINE_LENGTH])
 	int limit1 = 0;
 	char *word,*word1;
 	char *commands[100];
+	//commands=malloc(sizeof(char)*100*100);
 	word1 = strtok_r(str, delimiter1, &ptr1);
 	while (word1 != NULL)
 	{
@@ -44,6 +45,10 @@ void stringsplitter(char str[LINE_LENGTH])
 			word = strtok_r(NULL, delimiter, &ptr);
 		}
 		word1 = strtok_r(NULL, delimiter1, &ptr1);
+		for(int i=limit;i<100;i++)
+		{
+			commands[i]=NULL;
+		}
 		executioner(commands, limit);
 		//printf("%s\n%s\n%d\n", commands[0], commands[1], limit);
 	}
