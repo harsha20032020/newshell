@@ -65,13 +65,31 @@ void foreground(char *command[100], int len)
 void child()
 {
     //https://stackoverflow.com/questions/4200373/just-check-status-process-in-c
-	int status;
-	pid_t pid;
-	pid = waitpid(-1, &status, WNOHANG);
-	if (pid > 0)
-	{
-		fprintf(stderr, "pid %d exited Normally\n", pid);
-        fflush(stderr);
-	}
+    int status;
+    pid_t pid;
+    pid = waitpid(-1, &status, WNOHANG);
+    if (pid > 0)
+    {
+        if (WIFEXITED(pid))
+        {
+            printf("Child with pid %d exited with RC=%d\n", pid, WEXITSTATUS(pid));
+        }
+        if (WIFSIGNALED(pid))
+        {
+            printf("Child with pid %d exited via signal %d\n", pid, WTERMSIG(pid));
+        }
+    }
+    // else if (pid > 0 && WIFSIGNALED(status))
+    // {
+    //     fprintf(stderr, "pid %d exited on signal %d\n", pid, WTERMSIG(status));
+    // }
+    // else if (pid > 0 && WIFSTOPPED(status))
+    // {
+    //     fprintf(stderr, "pid %d stopped by signal %d\n", pid, WSTOPSIG(status));
+    // }
+    // else if (pid > 0 && WIFCONTINUED(status))
+    // {
+    //     fprintf(stderr, "pid %d continued\n", pid);
+    // }
 }
 // idk why but looks and runs perfect ig

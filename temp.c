@@ -1,29 +1,30 @@
 #include <stdio.h>
-#include <stdlib.h>
-
 int main()
 {
-    int num;
-    FILE *fptr;
-
-    // use appropriate location if you are using MacOS or Linux
-    fptr = fopen("program.txt", "w");
-    char *string;						  // character array pointer
-	size_t size = 10;					  // initial size of char array
-	string = malloc(size * sizeof(char)); // allocate memory for char array
-	char **string_pointer = &string;	  // double pointer to char array
-    if (fptr == NULL)
+    int chr1, chr2;
+    printf("Press any arrow key...\n");
+    //chr1 = getchar();
+    //if (chr1 == 0xE0) //to check scroll key interrupt
     {
-        printf("Error!");
-        exit(1);
+        chr2 = getchar(); //to read arrow key
+        switch (chr2)
+        {
+        case 72:
+            printf("UP ARROW KEY PRESSED\n");
+            break;
+        case 80:
+            printf("DOWN ARROW KEY PRESSED\n");
+            break;
+        case 75:
+            printf("LEFT ARROW KEY PRESSED\n");
+            break;
+        case 77:
+            printf("RIGHT ARROW KEY PRESSED\n");
+            break;
+        default:
+            printf("OTHER KEY PRESSED: %d %d\n", chr1, chr2);
+            break;
+        };
     }
-    for (int i = 0; i < 3; i++)
-    {
-        getline(string_pointer, &size, stdin);
-        fprintf(fptr, "%s", string);
-    }
-
-    fclose(fptr);
-
     return 0;
 }

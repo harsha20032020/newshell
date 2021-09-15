@@ -66,11 +66,11 @@ void executioner(char *command[100], int len)
     {
         pinfo2(atoi(command[1]));
     }
-    else if (strcmp(command[0],"history")==0 && len==1)
+    else if (strcmp(command[0], "history") == 0 && len == 1)
     {
         history();
     }
-    else if (strcmp(command[0],"history")==0 && len==2)
+    else if (strcmp(command[0], "history") == 0 && len == 2)
     {
         complexhistory(atoi(command[1]));
     }
@@ -165,38 +165,46 @@ void pinfo()
     char path[50];
     sprintf(path, "/proc/%d/stat", pid);
     printf("pid--   %d\n", pid);
+
     int fd = open(path, O_RDONLY);
-    int i = 1;
-    char buffer[1000];
-    read(fd, buffer, 1000);
-    char *token = strtok(buffer, " ");
-    char *state;
-    int vsize;
-    while (token != NULL)
+    if (fd != -1)
     {
-        if (i == 3)
+        int i = 1;
+        char buffer[1000];
+        read(fd, buffer, 1000);
+        char *token = strtok(buffer, " ");
+        char *state;
+        int vsize;
+        while (token != NULL)
         {
-            state = token;
+            if (i == 3)
+            {
+                state = token;
+            }
+            if (i == 23)
+            {
+                vsize = atoi(token);
+            }
+            //printf("%d %s\n",i,token);
+            token = strtok(NULL, " ");
+            i++;
         }
-        if (i == 23)
-        {
-            vsize = atoi(token);
-        }
-        //printf("%d %s\n",i,token);
-        token = strtok(NULL, " ");
-        i++;
+        printf("Process State--   %s\n", state);
+        printf("Virtual Memory Size(in bytes)--   %d\n", vsize);
+        close(fd);
+        char exec[200];
+        sprintf(path, "/proc/%d/exe", pid);
+        readlink(path, exec, sizeof(exec));
+        char wd[200];
+        getcwd(wd, sizeof(wd));
+        printf("Executable Path--   ");
+        temp(exec, strlen(wd), strlen(exec));
+        printf("\n");
     }
-    printf("Process State--   %s\n", state);
-    printf("Virtual Memory Size(in bytes)--   %d\n", vsize);
-    close(fd);
-    char exec[200];
-    sprintf(path, "/proc/%d/exe", pid);
-    readlink(path, exec, sizeof(exec));
-    char wd[200];
-    getcwd(wd, sizeof(wd));
-    printf("Executable Path--   ");
-    temp(exec,strlen(wd),strlen(exec));
-    printf("\n");
+    else
+    {
+        perror("Process Unknown");
+    }
 }
 void pinfo2(int pid)
 {
@@ -208,33 +216,40 @@ void pinfo2(int pid)
     int fd = open(path, O_RDONLY);
     int i = 1;
     char buffer[1000];
-    read(fd, buffer, 1000);
-    char *token = strtok(buffer, " ");
-    char *state;
-    int vsize;
-    while (token != NULL)
+    if (fd != -1)
     {
-        if (i == 3)
+        read(fd, buffer, 1000);
+        char *token = strtok(buffer, " ");
+        char *state;
+        int vsize;
+        while (token != NULL)
         {
-            state = token;
+            if (i == 3)
+            {
+                state = token;
+            }
+            if (i == 23)
+            {
+                vsize = atoi(token);
+            }
+            //printf("%d %s\n",i,token);
+            token = strtok(NULL, " ");
+            i++;
         }
-        if (i == 23)
-        {
-            vsize = atoi(token);
-        }
-        //printf("%d %s\n",i,token);
-        token = strtok(NULL, " ");
-        i++;
+        printf("Process State--   %s\n", state);
+        printf("Virtual Memory Size(in bytes)--   %d\n", vsize);
+        close(fd);
+        char exec[200];
+        sprintf(path, "/proc/%d/exe", pid);
+        readlink(path, exec, sizeof(exec));
+        char wd[200];
+        getcwd(wd, sizeof(wd));
+        printf("Executable Path--   ");
+        temp(exec, strlen(wd), strlen(exec));
+        printf("\n");
     }
-    printf("Process State--   %s\n", state);
-    printf("Virtual Memory Size(in bytes)--   %d\n", vsize);
-    close(fd);
-    char exec[200];
-    sprintf(path, "/proc/%d/exe", pid);
-    readlink(path, exec, sizeof(exec));
-    char wd[200];
-    getcwd(wd, sizeof(wd));
-    printf("Executable Path--   ");
-    temp(exec,strlen(wd),strlen(exec));
-    printf("\n");
+    else
+    {
+        perror("Please check process pid");
+    }
 }
