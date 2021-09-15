@@ -15,6 +15,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include "process.h"
+#include "parser.h"
 void temp(char *str, int i, int j)
 {
     printf("\033[1;34m");
@@ -64,6 +65,14 @@ void executioner(char *command[100], int len)
     else if (strcmp(command[0], "pinfo") == 0 && len == 2)
     {
         pinfo2(atoi(command[1]));
+    }
+    else if (strcmp(command[0],"history")==0 && len==1)
+    {
+        history();
+    }
+    else if (strcmp(command[0],"history")==0 && len==2)
+    {
+        complexhistory(atoi(command[1]));
     }
     else
     {

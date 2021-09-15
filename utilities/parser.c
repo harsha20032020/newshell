@@ -8,6 +8,7 @@
 #include <libgen.h>
 #include "parser.h"
 #include "execute.h"
+//int i = 1;
 char *readcmd()
 {
 	char *string;						  // character array pointer
@@ -27,11 +28,54 @@ char *readcmd()
 void writetofile(char str[LINE_LENGTH])
 {
 	FILE *fptr;
-
-    // use appropriate location if you are using MacOS or Linux
-    fptr = fopen("history.txt", "a");
-	fprintf(fptr, "%s", str);
+	// use appropriate location if you are using MacOS or Linux
+	fptr = fopen("history.txt", "a");
+	fprintf(fptr,"%s", str);
+	//fprintf(fptr, "%s", str);
 	fclose(fptr);
+}
+int countlines()
+{
+	int count = 0;
+	FILE *fptr;
+	fptr = fopen("history.txt", "r");
+	char c;
+	while ((c = fgetc(fptr)) != EOF)
+	{
+		if (c == '\n')
+		{	
+			count++;
+		}
+	}
+	fclose(fptr);
+	return count;
+}
+void history()
+{
+	FILE *fptr;
+	char line[1000];
+	fptr = fopen("history.txt", "r");
+	int n;
+	char comm[100];
+	while (fgets(line, sizeof(line), fptr) != 0)
+	{
+		printf("%s",line);
+	}
+}
+void complexhistory(int x)
+{
+	FILE *fptr;
+	char line[1000];
+	fptr = fopen("history.txt", "r");
+	int n=countlines();
+	for(int i=0;i<n;i++)
+	{
+		fgets(line, sizeof(line), fptr);
+		if(i>=n-x)
+		{
+			printf("%s",line);
+		}
+	}
 }
 void stringsplitter(char str[LINE_LENGTH])
 {
@@ -55,7 +99,7 @@ void stringsplitter(char str[LINE_LENGTH])
 			// write(fdh,word,strlen(word));
 			word = strtok_r(NULL, delimiter, &ptr);
 		}
-		
+
 		word1 = strtok_r(NULL, delimiter1, &ptr1);
 		// for (int i = 0; i < limit; i++)
 		// {
