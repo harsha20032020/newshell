@@ -30,7 +30,7 @@ void writetofile(char str[LINE_LENGTH])
 	FILE *fptr;
 	// use appropriate location if you are using MacOS or Linux
 	fptr = fopen("history.txt", "a");
-	fprintf(fptr,"%s", str);
+	fprintf(fptr, "%s", str);
 	//fprintf(fptr, "%s", str);
 	fclose(fptr);
 }
@@ -43,7 +43,7 @@ int countlines()
 	while ((c = fgetc(fptr)) != EOF)
 	{
 		if (c == '\n')
-		{	
+		{
 			count++;
 		}
 	}
@@ -55,27 +55,47 @@ void history()
 	FILE *fptr;
 	char line[1000];
 	fptr = fopen("history.txt", "r");
-	int n;
+	int n = countlines();
 	char comm[100];
-	while (fgets(line, sizeof(line), fptr) != 0)
+	// while (fgets(line, sizeof(line), fptr) != 0)
+	// {
+	// 	printf("%s",line);
+	// }
+	printf("\033[0;95m");
+	if (n > 20)
 	{
-		printf("%s",line);
+		for (int i = 0; i < 20; i++)
+		{
+			fgets(line, sizeof(line), fptr);
+			printf("%s", line);
+		}
 	}
+	else
+	{
+		for (int i = 0; i < n; i++)
+		{
+			fgets(line, sizeof(line), fptr);
+			printf("%s", line);
+		}
+	}
+	printf("\033[0m");
 }
 void complexhistory(int x)
 {
 	FILE *fptr;
 	char line[1000];
 	fptr = fopen("history.txt", "r");
-	int n=countlines();
-	for(int i=0;i<n;i++)
+	int n = countlines();
+	printf("\033[0;95m");
+	for (int i = 0; i < n; i++)
 	{
 		fgets(line, sizeof(line), fptr);
-		if(i>=n-x)
+		if (i >= n - x)
 		{
-			printf("%s",line);
+			printf("%s", line);
 		}
 	}
+	printf("\033[0m");
 }
 void stringsplitter(char str[LINE_LENGTH])
 {
