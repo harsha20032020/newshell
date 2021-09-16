@@ -11,6 +11,7 @@
 #include "./utilities/name.h"
 #include "./utilities/parser.h"
 #include "./utilities/execute.h"
+#include "./utilities/ls.h"
 int main()
 {
     //printdir();

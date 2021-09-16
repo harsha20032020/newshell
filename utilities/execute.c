@@ -16,6 +16,8 @@
 #include <signal.h>
 #include "process.h"
 #include "parser.h"
+#include "dirent.h"
+#include "ls.h"
 void temp(char *str, int i, int j)
 {
     printf("\033[1;34m");
@@ -73,6 +75,10 @@ void executioner(char *command[100], int len)
     else if (strcmp(command[0], "history") == 0 && len == 2)
     {
         complexhistory(atoi(command[1]));
+    }
+    else if (strcmp(command[0], "ls") == 0)
+    {
+        lscommand(command, len);
     }
     else
     {
