@@ -9,6 +9,6 @@ void repeat(char *commands[100],int n,int len,char *initial_dir);
 void temp(char *str, int i, int j);
 void pinfo();
 void pinfo2(int pid);
-void lscommand(char *commands[100], int len);
+void lscommand(char *commands[100], int len, char *initial_dir);
 int flaggerfunc(char *tokens[100],int len);
 #endif // !NAME#def

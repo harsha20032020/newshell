@@ -78,7 +78,7 @@ void executioner(char *command[100], int len,char initial_dir[1024])
     }
     else if (strcmp(command[0], "ls") == 0)
     {
-        lscommand(command, len);
+        lscommand(command, len, initial_dir);
     }
     else
     {

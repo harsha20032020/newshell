@@ -20,7 +20,7 @@
 #include "ls.h"
 #include <pwd.h>
 #include <grp.h>
-void lscommand(char *commands[100], int len)
+void lscommand(char *commands[100], int len, char initial_dir[1024])
 {
     struct dirent *dir;
     DIR *dp = NULL;
@@ -54,6 +54,7 @@ void lscommand(char *commands[100], int len)
     // {
     //     printf("%s\n",directories[i]);
     // }
+    printf("\033[0;92m");
     if (q == 0)
     {
         if (flg == 0)
@@ -64,29 +65,53 @@ void lscommand(char *commands[100], int len)
         {
             hiddenfilesls(".");
         }
-        if(flg==2 || flg==3)
+        if (flg == 2 || flg == 3)
         {
-            detailedls(".",flg);
+            detailedls(".", flg);
+        }
+    }
+    else if (q == 1 && strcmp(directories[0], "~") == 0)
+    {
+        if (flg == 0)
+        {
+            printf("%s\n", directories[0]);
+            classicls(initial_dir);
+        }
+        if (flg == 1)
+        {
+            printf("%s\n", directories[0]);
+            hiddenfilesls(initial_dir);
+        }
+        if (flg == 2 || flg == 3)
+        {
+            printf("%s\n", directories[0]);
+            detailedls(initial_dir, flg);
         }
     }
     else
     {
+        int sum = 0;
         for (int i = 0; i < q; i++)
         {
             if (flg == 0)
             {
+                printf("%s\n", directories[i]);
                 classicls(directories[i]);
             }
             if (flg == 1)
             {
+                printf("%s\n", directories[i]);
                 hiddenfilesls(directories[i]);
             }
-            if(flg==2 || flg==3)
+            if (flg == 2 || flg == 3)
             {
-                detailedls(directories[i],flg);
+
+                printf("%s\n", directories[i]);
+                detailedls(directories[i], flg);
             }
         }
     }
+    printf("\033[0m");
 }
 int flaggerfunc(char *tokens[100], int len)
 {
@@ -122,7 +147,7 @@ int flaggerfunc(char *tokens[100], int len)
             //printf("-a -l triggered\n");
             return 3;
         }
-        else if(strcmp(tokens[0], "-l") == 0 && strcmp(tokens[1], "-a") == 0)
+        else if (strcmp(tokens[0], "-l") == 0 && strcmp(tokens[1], "-a") == 0)
         {
             return 3;
         }
@@ -141,6 +166,7 @@ int flaggerfunc(char *tokens[100], int len)
 }
 void classicls(char *command)
 {
+    printf("\033[0;92m");
     struct dirent **list;
     int n = scandir(command, &list, NULL, alphasort);
     if (n < 0)
@@ -157,15 +183,18 @@ void classicls(char *command)
         // }
         for (int i = 0; i < n; i++)
         {
+
             if (list[i]->d_name[0] != '.')
                 printf("%s\n", list[i]->d_name);
             free(list[i]);
         }
         free(list);
     }
+    printf("\033[0m");
 }
 void hiddenfilesls(char *command)
 {
+    printf("\033[0;92m");
     struct dirent **list;
     int n = scandir(command, &list, NULL, alphasort);
     if (n < 0)
@@ -187,12 +216,15 @@ void hiddenfilesls(char *command)
         }
         free(list);
     }
+    printf("\033[0m");
 }
 void detailedls(char *command, int flag)
 {
     printf("\033[0;92m");
     struct dirent **list;
     int n = scandir(command, &list, NULL, alphasort);
+    int sum = 0;
+    struct stat file;
     if (n < 0)
     {
         perror("scandir");
@@ -210,7 +242,6 @@ void detailedls(char *command, int flag)
             if (flag == 3)
             {
                 char buffer[10000];
-                struct stat file;
                 stat(list[i]->d_name, &file);
                 printf("%s", (S_ISDIR(file.st_mode)) ? "d" : "-");
                 printf("%s", (file.st_mode & S_IRUSR) ? "r" : "-");
@@ -239,7 +270,7 @@ void detailedls(char *command, int flag)
                 {
                     printf("%s ", grp->gr_name);
                 }
-
+                sum += file.st_blocks;
                 printf(" ");
                 printf("%10ld ", file.st_size);
 
@@ -249,11 +280,12 @@ void detailedls(char *command, int flag)
                 printf(" ");
                 printf("%s ", list[i]->d_name);
                 printf("\n");
+
+                //printf("sum2=%d %ld\n", sum, file.st_blocks);
             }
             else if (flag == 2)
             {
                 char buffer[10000];
-                struct stat file;
                 if (list[i]->d_name[0] != '.')
                 {
                     stat(list[i]->d_name, &file);
@@ -284,7 +316,7 @@ void detailedls(char *command, int flag)
                     {
                         printf("%s ", grp->gr_name);
                     }
-
+                    sum += file.st_blocks;
                     printf(" ");
                     printf("%10ld ", file.st_size);
 
@@ -294,9 +326,12 @@ void detailedls(char *command, int flag)
                     printf(" ");
                     printf("%s ", list[i]->d_name);
                     printf("\n");
+
+                    //printf("sum2=%d %ld\n", sum, file.st_blocks);
                 }
             }
         }
+        printf("total : %d\n", sum / 2);
         printf("\033[0m");
         free(list);
     }
