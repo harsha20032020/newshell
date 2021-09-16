@@ -23,7 +23,7 @@ int main()
         //printf("%s\n", initial_dir);
         usleep(1e5);
         username(initiallen,initial_dir); //prints the default prompt message
-        readcmd();
+        readcmd(initial_dir);
         // size_t characters = getline(string_pointer, &size, stdin);
         // printf("You typed: %s", string);
         //splitcommands(string);

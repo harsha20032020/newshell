@@ -36,7 +36,7 @@ void temp(char *str, int i, int j)
     printf("\033[0m");
     //printf("$ ");
 }
-void executioner(char *command[100], int len)
+void executioner(char *command[100], int len,char initial_dir[1024])
 {
     char currentdir[PATH_MAX];
     getcwd(currentdir, sizeof(currentdir));
@@ -53,12 +53,12 @@ void executioner(char *command[100], int len)
     }
     else if (strcmp(command[0], "cd") == 0)
     {
-        cdcommand(command, len);
+        cdcommand(command, len, initial_dir);
     }
     else if (strcmp(command[0], "repeat") == 0)
     {
         int n = atoi(command[1]);
-        repeat(command, n, len);
+        repeat(command, n, len, initial_dir);
     }
     else if (strcmp(command[0], "pinfo") == 0 && len == 1)
     {
@@ -94,7 +94,7 @@ void echocommand(char *command[100], int len)
     }
     printf("\n");
 }
-void cdcommand(char *command[100], int len)
+void cdcommand(char *command[100], int len,char initial_dir[1024])
 {
     char currentdir[PATH_MAX];
     getcwd(currentdir, sizeof(currentdir));
@@ -103,11 +103,30 @@ void cdcommand(char *command[100], int len)
     strcpy(temp, currentdir);
     /*fail if prev is NULL, do something*/
     //printf("%s\n",prev);
-    if (command[1][0] == '~')
+    // if (len == 1)
+    // {
+    //     printf("this came\n");
+    //     char currentdir[PATH_MAX];
+    //     getcwd(currentdir, sizeof(currentdir));
+    //     chdir(currentdir);
+    // }
+    if (len == 1)
     {
-        char *home = getenv("HOME");
-        strcpy(currentdir, home);
-        if (chdir(home) == 0)
+        //char *home ;
+        //= getenv("HOME");
+        strcpy(currentdir, initial_dir);
+        if (chdir(currentdir) == 0)
+        {
+        }
+        else
+        {
+            printf("cd: %s: No such file or directory\n", command[1]);
+        }
+    }
+    else if (command[1][0] == '~')
+    {
+        strcpy(currentdir, initial_dir);
+        if (chdir(currentdir) == 0)
         {
         }
         else
@@ -125,6 +144,10 @@ void cdcommand(char *command[100], int len)
         {
             printf("cd: %s: No such file or directory\n", command[1]);
         }
+    }
+    else if (len > 2)
+    {
+        printf("cd cannot have more than 2 arguments\n");
     }
     else
     {
@@ -154,7 +177,7 @@ void processes(char *command[100], int len)
         foreground(command, len);
     }
 }
-void repeat(char *commands[100], int n, int len)
+void repeat(char *commands[100], int n, int len,char initial_dir[1024])
 {
     char *newstring[100];
     for (int i = 2; i < len; i++)
@@ -163,7 +186,7 @@ void repeat(char *commands[100], int n, int len)
     }
     for (int i = 0; i < n; i++)
     {
-        executioner(newstring, len - 2);
+        executioner(newstring, len - 2,initial_dir);
     }
 }
 void pinfo()

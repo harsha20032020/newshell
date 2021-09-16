@@ -9,7 +9,7 @@
 #include "parser.h"
 #include "execute.h"
 //int i = 1;
-char *readcmd()
+char *readcmd(char initial_dir[1024])
 {
 	char *string;						  // character array pointer
 	size_t size = 10;					  // initial size of char array
@@ -19,10 +19,10 @@ char *readcmd()
 	if (characters == -1)
 	{
 		printf("Error. Please give input correctly.");
-		return readcmd();
+		return readcmd(initial_dir);
 	}
 	writetofile(string);
-	stringsplitter(string);
+	stringsplitter(string, initial_dir);
 	return string;
 }
 void writetofile(char str[LINE_LENGTH])
@@ -97,7 +97,7 @@ void complexhistory(int x)
 	}
 	printf("\033[0m");
 }
-void stringsplitter(char str[LINE_LENGTH])
+void stringsplitter(char str[LINE_LENGTH], char initial_dir[1024])
 {
 	char *delimiter = " \n"; // the first delimiter
 	char *delimiter1 = ";";	 // the second delimiter
@@ -129,7 +129,7 @@ void stringsplitter(char str[LINE_LENGTH])
 		{
 			commands[i] = NULL;
 		}
-		executioner(commands, limit);
+		executioner(commands, limit, initial_dir);
 		//printf("%s\n%s\n%d\n", commands[0], commands[1], limit);
 	}
 }
