@@ -64,6 +64,10 @@ void lscommand(char *commands[100], int len)
         {
             hiddenfilesls(".");
         }
+        if(flg==2 || flg==3)
+        {
+            detailedls(".",flg);
+        }
     }
     else
     {
@@ -76,6 +80,10 @@ void lscommand(char *commands[100], int len)
             if (flg == 1)
             {
                 hiddenfilesls(directories[i]);
+            }
+            if(flg==2 || flg==3)
+            {
+                detailedls(directories[i],flg);
             }
         }
     }
@@ -176,7 +184,7 @@ void hiddenfilesls(char *command)
         free(list);
     }
 }
-void detailedls(char *command)
+void detailedls(char *command, int flag)
 {
     struct dirent **list;
     int n = scandir(command, &list, NULL, alphasort);
@@ -194,46 +202,95 @@ void detailedls(char *command)
         // }
         for (int i = 0; i < n; i++)
         {
-            char buffer[10000];
-            struct stat file;
-            stat(list[i]->d_name, &file);
-            printf("%s", (S_ISDIR(file.st_mode)) ? "d" : "-");
-            printf("%s", (file.st_mode & S_IRUSR) ? "r" : "-");
-            printf("%s", (file.st_mode & S_IWUSR) ? "w" : "-");
-            printf("%s", (file.st_mode & S_IXUSR) ? "x" : "-");
-            printf("%s", (file.st_mode & S_IRGRP) ? "r" : "-");
-            printf("%s", (file.st_mode & S_IWGRP) ? "w" : "-");
-            printf("%s", (file.st_mode & S_IXGRP) ? "x" : "-");
-            printf("%s", (file.st_mode & S_IROTH) ? "r" : "-");
-            printf("%s", (file.st_mode & S_IWOTH) ? "w" : "-");
-            printf("%s", (file.st_mode & S_IXOTH) ? "x" : "-");
-
-            printf(" ");
-            printf("%ld ", file.st_nlink);
-            char date[12];
-            struct passwd *pwd;
-            struct group *grp;
-
-            if ((pwd = getpwuid(file.st_uid)) != NULL)
+            if (flag == 3)
             {
-                printf("%s ", pwd->pw_name);
-            }
-            printf(" ");
+                char buffer[10000];
+                struct stat file;
+                stat(list[i]->d_name, &file);
+                printf("%s", (S_ISDIR(file.st_mode)) ? "d" : "-");
+                printf("%s", (file.st_mode & S_IRUSR) ? "r" : "-");
+                printf("%s", (file.st_mode & S_IWUSR) ? "w" : "-");
+                printf("%s", (file.st_mode & S_IXUSR) ? "x" : "-");
+                printf("%s", (file.st_mode & S_IRGRP) ? "r" : "-");
+                printf("%s", (file.st_mode & S_IWGRP) ? "w" : "-");
+                printf("%s", (file.st_mode & S_IXGRP) ? "x" : "-");
+                printf("%s", (file.st_mode & S_IROTH) ? "r" : "-");
+                printf("%s", (file.st_mode & S_IWOTH) ? "w" : "-");
+                printf("%s", (file.st_mode & S_IXOTH) ? "x" : "-");
 
-            if ((grp = getgrgid(file.st_gid)) != NULL)
+                printf(" ");
+                printf("%ld ", file.st_nlink);
+                char date[12];
+                struct passwd *pwd;
+                struct group *grp;
+
+                if ((pwd = getpwuid(file.st_uid)) != NULL)
+                {
+                    printf("%s ", pwd->pw_name);
+                }
+                printf(" ");
+
+                if ((grp = getgrgid(file.st_gid)) != NULL)
+                {
+                    printf("%s ", grp->gr_name);
+                }
+
+                printf(" ");
+                printf("%ld ", file.st_size);
+
+                strftime(date, 20, "%b %d %H:%M ", localtime(&(file.st_mtime)));
+                printf(" %s ", date);
+
+                printf(" ");
+                printf("%s ", list[i]->d_name);
+                printf("\n");
+            }
+            else if (flag == 2)
             {
-                printf("%s ", grp->gr_name);
+                char buffer[10000];
+                struct stat file;
+                if (list[i]->d_name[0] != '.')
+                {
+                    stat(list[i]->d_name, &file);
+                    printf("%s", (S_ISDIR(file.st_mode)) ? "d" : "-");
+                    printf("%s", (file.st_mode & S_IRUSR) ? "r" : "-");
+                    printf("%s", (file.st_mode & S_IWUSR) ? "w" : "-");
+                    printf("%s", (file.st_mode & S_IXUSR) ? "x" : "-");
+                    printf("%s", (file.st_mode & S_IRGRP) ? "r" : "-");
+                    printf("%s", (file.st_mode & S_IWGRP) ? "w" : "-");
+                    printf("%s", (file.st_mode & S_IXGRP) ? "x" : "-");
+                    printf("%s", (file.st_mode & S_IROTH) ? "r" : "-");
+                    printf("%s", (file.st_mode & S_IWOTH) ? "w" : "-");
+                    printf("%s", (file.st_mode & S_IXOTH) ? "x" : "-");
+
+                    printf(" ");
+                    printf("%ld ", file.st_nlink);
+                    char date[12];
+                    struct passwd *pwd;
+                    struct group *grp;
+
+                    if ((pwd = getpwuid(file.st_uid)) != NULL)
+                    {
+                        printf("%s ", pwd->pw_name);
+                    }
+                    printf(" ");
+
+                    if ((grp = getgrgid(file.st_gid)) != NULL)
+                    {
+                        printf("%s ", grp->gr_name);
+                    }
+
+                    printf(" ");
+                    printf("%ld ", file.st_size);
+
+                    strftime(date, 20, "%b %d %H:%M ", localtime(&(file.st_mtime)));
+                    printf(" %s ", date);
+
+                    printf(" ");
+                    printf("%s ", list[i]->d_name);
+                    printf("\n");
+                }
             }
-
-            printf(" ");
-            printf("%ld ", file.st_size);
-
-            strftime(date, 20, "%b %d %H:%M ", localtime(&(file.st_mtime)));
-            printf(" %s ", date);
-
-            printf(" ");
-            printf("%s ", list[i]->d_name);
-            printf("\n");
         }
         free(list);
     }
