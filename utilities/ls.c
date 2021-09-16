@@ -122,6 +122,10 @@ int flaggerfunc(char *tokens[100], int len)
             //printf("-a -l triggered\n");
             return 3;
         }
+        else if(strcmp(tokens[0], "-l") == 0 && strcmp(tokens[1], "-a") == 0)
+        {
+            return 3;
+        }
         else if (strcmp(tokens[0], "-a") == 0 && strcmp(tokens[1], "-a") == 0)
         {
             //printf("-a -a triggered\n");
