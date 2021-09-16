@@ -190,6 +190,7 @@ void hiddenfilesls(char *command)
 }
 void detailedls(char *command, int flag)
 {
+    printf("\033[0;92m");
     struct dirent **list;
     int n = scandir(command, &list, NULL, alphasort);
     if (n < 0)
@@ -223,7 +224,7 @@ void detailedls(char *command, int flag)
                 printf("%s", (file.st_mode & S_IXOTH) ? "x" : "-");
 
                 printf(" ");
-                printf("%ld ", file.st_nlink);
+                printf("%3ld ", file.st_nlink);
                 char date[12];
                 struct passwd *pwd;
                 struct group *grp;
@@ -240,7 +241,7 @@ void detailedls(char *command, int flag)
                 }
 
                 printf(" ");
-                printf("%ld ", file.st_size);
+                printf("%10ld ", file.st_size);
 
                 strftime(date, 20, "%b %d %H:%M ", localtime(&(file.st_mtime)));
                 printf(" %s ", date);
@@ -268,7 +269,7 @@ void detailedls(char *command, int flag)
                     printf("%s", (file.st_mode & S_IXOTH) ? "x" : "-");
 
                     printf(" ");
-                    printf("%ld ", file.st_nlink);
+                    printf("%3ld ", file.st_nlink);
                     char date[12];
                     struct passwd *pwd;
                     struct group *grp;
@@ -285,7 +286,7 @@ void detailedls(char *command, int flag)
                     }
 
                     printf(" ");
-                    printf("%ld ", file.st_size);
+                    printf("%10ld ", file.st_size);
 
                     strftime(date, 20, "%b %d %H:%M ", localtime(&(file.st_mtime)));
                     printf(" %s ", date);
@@ -296,6 +297,7 @@ void detailedls(char *command, int flag)
                 }
             }
         }
+        printf("\033[0m");
         free(list);
     }
 }

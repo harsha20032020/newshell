@@ -43,7 +43,7 @@ void classicls(char *command)
             printf("%s", (fileStat.st_mode & S_IXOTH) ? "x" : "-");
 
             printf(" ");
-            printf("%ld ", fileStat.st_nlink);
+            printf("%3ld ", fileStat.st_nlink);
             char date[12];
             struct passwd *pwd;
             struct group *grp;
@@ -60,7 +60,7 @@ void classicls(char *command)
             }
 
             printf(" ");
-            printf("%ld ", fileStat.st_size);
+            printf("%10ld ", fileStat.st_size);
 
             strftime(date, 20, "%b %d %H:%M ", localtime(&(fileStat.st_mtime)));
             printf(" %s ", date);
@@ -75,7 +75,7 @@ void classicls(char *command)
 int main(void)
 {
     char *command;
-    command = "/media/harsh/Shared Volume/temp";
+    command = ".";
     classicls(command);
     return (0);
 }
