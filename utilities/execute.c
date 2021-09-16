@@ -99,6 +99,8 @@ void cdcommand(char *command[100], int len)
     char currentdir[PATH_MAX];
     getcwd(currentdir, sizeof(currentdir));
     char prev[PATH_MAX];
+    char temp[PATH_MAX];
+    strcpy(temp, currentdir);
     /*fail if prev is NULL, do something*/
     //printf("%s\n",prev);
     if (command[1][0] == '~')
@@ -117,7 +119,7 @@ void cdcommand(char *command[100], int len)
     {
         if (chdir(prev) == 0)
         {
-            printf("1:%s\n2:%s\n", prev, currentdir);
+            //printf("1:%s\n2:%s\n", prev, currentdir);
         }
         else
         {
@@ -139,7 +141,7 @@ void cdcommand(char *command[100], int len)
             printf("cd: %s: No such file or directory\n", command[1]);
         }
     }
-    strcpy(prev, currentdir);
+    strcpy(prev, temp);
 }
 void processes(char *command[100], int len)
 {
