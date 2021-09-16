@@ -14,13 +14,14 @@
 int main()
 {
     //printdir();
-    char *initial_dir = getcwd(NULL, 0);
+    char initial_dir[1024];
+    getcwd(initial_dir, sizeof(initial_dir));
     int initiallen = strlen(initial_dir);
     while (1)
     {
         //printf("%s\n", initial_dir);
         usleep(1e5);
-        username(initiallen); //prints the default prompt message
+        username(initiallen,initial_dir); //prints the default prompt message
         readcmd();
         // size_t characters = getline(string_pointer, &size, stdin);
         // printf("You typed: %s", string);

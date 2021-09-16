@@ -70,13 +70,13 @@ void child()
     pid = waitpid(-1, &status, WNOHANG);
     if (pid > 0)
     {
-        if (WIFEXITED(pid))
+        if (WIFEXITED(status))
         {
-            printf("Child with pid %d exited with RC=%d\n", pid, WEXITSTATUS(pid));
+            printf("Child with pid %d exited normally with exit code=%d\n", pid, WEXITSTATUS(status));
         }
-        if (WIFSIGNALED(pid))
+        if (WIFSIGNALED(status))
         {
-            printf("Child with pid %d exited via signal %d\n", pid, WTERMSIG(pid));
+            printf("Child with pid %d exited abnormally via signal %d\n", pid, WTERMSIG(status));
         }
     }
     // else if (pid > 0 && WIFSIGNALED(status))

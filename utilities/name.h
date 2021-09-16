@@ -3,8 +3,8 @@
 
 void echo(char *str);
 int printpath();
-void printstr(char *str,int i,int j);
-int username(int n);
+void printstr(char *str,int i,int j,char *base);
+int username(int n, char *base);
 void printdir();
 
 #endif // !NAME#def
