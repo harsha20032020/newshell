@@ -225,7 +225,8 @@ void pinfo()
         close(fd);
         char exec[200];
         sprintf(path, "/proc/%d/exe", pid);
-        readlink(path, exec, sizeof(exec));
+        int l=readlink(path, exec, sizeof(exec));
+        exec[l] = '\0';
         char wd[200];
         getcwd(wd, sizeof(wd));
         printf("Executable Path--   ");
@@ -272,7 +273,8 @@ void pinfo2(int pid)
         close(fd);
         char exec[200];
         sprintf(path, "/proc/%d/exe", pid);
-        readlink(path, exec, sizeof(exec));
+        int l=readlink(path, exec, sizeof(exec));
+        exec[l] = '\0';
         char wd[200];
         getcwd(wd, sizeof(wd));
         printf("Executable Path--   ");
