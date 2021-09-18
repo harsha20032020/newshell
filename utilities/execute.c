@@ -220,7 +220,14 @@ void pinfo()
             token = strtok(NULL, " ");
             i++;
         }
-        printf("Process State--   %s\n", state);
+        if(getpgid(pid) == pid)
+        {
+            printf("Process State--   +%s\n", state);
+        }
+        else
+        {
+            printf("Process State--   %s\n", state);
+        }
         printf("Virtual Memory Size(in bytes)--   %d\n", vsize);
         close(fd);
         char exec[200];

@@ -1,278 +1,120 @@
-/***************************************************************************//**
-  @file         main.c
-  @author       Stephen Brennan
-  @date         Thursday,  8 January 2015
-  @brief        LSH (Libstephen SHell)
-*******************************************************************************/
-
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <termios.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <ctype.h>
 #include <string.h>
 
-/*
-  Function Declarations for builtin shell commands:
- */
-int lsh_cd(char **args);
-int lsh_help(char **args);
-int lsh_exit(char **args);
-
-/*
-  List of builtin commands, followed by their corresponding functions.
- */
-char *builtin_str[] = {
-  "cd",
-  "help",
-  "exit"
-};
-
-int (*builtin_func[]) (char **) = {
-  &lsh_cd,
-  &lsh_help,
-  &lsh_exit
-};
-
-int lsh_num_builtins() {
-  return sizeof(builtin_str) / sizeof(char *);
+void die(const char *s)
+{
+  perror(s);
+  exit(1);
 }
 
-/*
-  Builtin function implementations.
-*/
+struct termios orig_termios;
+
+void disableRawMode()
+{
+  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
+    die("tcsetattr");
+}
 
 /**
-   @brief Bultin command: change directory.
-   @param args List of args.  args[0] is "cd".  args[1] is the directory.
-   @return Always returns 1, to continue executing.
+ * Enable row mode for the terminal
+ * The ECHO feature causes each key you type to be printed to the terminal, so you can see what you’re typing.
+ * Terminal attributes can be read into a termios struct by tcgetattr().
+ * After modifying them, you can then apply them to the terminal using tcsetattr().
+ * The TCSAFLUSH argument specifies when to apply the change: in this case, it waits for all pending output to be written to the terminal, and also discards any input that hasn’t been read.
+ * The c_lflag field is for “local flags”
  */
-int lsh_cd(char **args)
+void enableRawMode()
 {
-  if (args[1] == NULL) {
-    fprintf(stderr, "lsh: expected argument to \"cd\"\n");
-  } else {
-    if (chdir(args[1]) != 0) {
-      perror("lsh");
+  if (tcgetattr(STDIN_FILENO, &orig_termios) == -1)
+    die("tcgetattr");
+  atexit(disableRawMode);
+  struct termios raw = orig_termios;
+  raw.c_lflag &= ~(ICANON | ECHO);
+  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1)
+    die("tcsetattr");
+}
+
+/**
+ * stdout and stdin are buffered we disable buffering on that
+ * After entering in raw mode we read characters one by one
+ * Up arrow keys and down arrow keys are represented by 3 byte escape codes
+ * starting with ascii number 27 i.e. ESC key
+ * This way we interpret arrow keys
+ * Tabs are usually handled by the term, but here we are simulating tabs for the sake of simplicity
+ * Backspace move the cursor one control character to the left
+ * @return
+ */
+int main()
+{
+  char *inp = malloc(sizeof(char) * 100);
+  char c;
+  while (1)
+  {
+    setbuf(stdout, NULL);
+    enableRawMode();
+    printf("Prompt>");
+    memset(inp, '\0', 100);
+    int pt = 0;
+    while (read(STDIN_FILENO, &c, 1) == 1)
+    {
+      if (iscntrl(c))
+      {
+        if (c == 10)
+          break;
+        else if (c == 27)
+        {
+          char buf[3];
+          buf[2] = 0;
+          if (read(STDIN_FILENO, buf, 2) == 2)
+          { // length of escape code
+            printf("\rarrow key: %s", buf);
+          }
+        }
+        else if (c == 127)
+        { // backspace
+          if (pt > 0)
+          {
+            if (inp[pt - 1] == 9)
+            {
+              for (int i = 0; i < 7; i++)
+              {
+                printf("\b");
+              }
+            }
+            inp[--pt] = '\0';
+            printf("\b \b");
+          }
+        }
+        else if (c == 9)
+        { // TAB character
+          inp[pt++] = c;
+          for (int i = 0; i < 8; i++)
+          { // TABS should be 8 spaces
+            printf(" ");
+          }
+        }
+        else if (c == 4)
+        {
+          exit(0);
+        }
+        else
+        {
+          printf("%d\n", c);
+        }
+      }
+      else
+      {
+        inp[pt++] = c;
+        printf("%c", c);
+      }
     }
+    disableRawMode();
+
+    printf("\nInput Read: [%s]\n", inp);
   }
-  return 1;
-}
-
-/**
-   @brief Builtin command: print help.
-   @param args List of args.  Not examined.
-   @return Always returns 1, to continue executing.
- */
-int lsh_help(char **args)
-{
-  int i;
-  printf("Stephen Brennan's LSH\n");
-  printf("Type program names and arguments, and hit enter.\n");
-  printf("The following are built in:\n");
-
-  for (i = 0; i < lsh_num_builtins(); i++) {
-    printf("  %s\n", builtin_str[i]);
-  }
-
-  printf("Use the man command for information on other programs.\n");
-  return 1;
-}
-
-/**
-   @brief Builtin command: exit.
-   @param args List of args.  Not examined.
-   @return Always returns 0, to terminate execution.
- */
-int lsh_exit(char **args)
-{
   return 0;
-}
-
-/**
-  @brief Launch a program and wait for it to terminate.
-  @param args Null terminated list of arguments (including program).
-  @return Always returns 1, to continue execution.
- */
-int lsh_launch(char **args)
-{
-  pid_t pid;
-  int status;
-
-  pid = fork();
-  if (pid == 0) {
-    // Child process
-    if (execvp(args[0], args) == -1) {
-      perror("lsh");
-    }
-    exit(EXIT_FAILURE);
-  } else if (pid < 0) {
-    // Error forking
-    perror("lsh");
-  } else {
-    // Parent process
-    do {
-      waitpid(pid, &status, WUNTRACED);
-    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-  }
-
-  return 1;
-}
-
-/**
-   @brief Execute shell built-in or launch program.
-   @param args Null terminated list of arguments.
-   @return 1 if the shell should continue running, 0 if it should terminate
- */
-int lsh_execute(char **args)
-{
-  int i;
-
-  if (args[0] == NULL) {
-    // An empty command was entered.
-    return 1;
-  }
-
-  for (i = 0; i < lsh_num_builtins(); i++) {
-    if (strcmp(args[0], builtin_str[i]) == 0) {
-      return (*builtin_func[i])(args);
-    }
-  }
-
-  return lsh_launch(args);
-}
-
-/**
-   @brief Read a line of input from stdin.
-   @return The line from stdin.
- */
-char *lsh_read_line(void)
-{
-#ifdef LSH_USE_STD_GETLINE
-  char *line = NULL;
-  ssize_t bufsize = 0; // have getline allocate a buffer for us
-  if (getline(&line, &bufsize, stdin) == -1) {
-    if (feof(stdin)) {
-      exit(EXIT_SUCCESS);  // We received an EOF
-    } else  {
-      perror("lsh: getline\n");
-      exit(EXIT_FAILURE);
-    }
-  }
-  return line;
-#else
-#define LSH_RL_BUFSIZE 1024
-  int bufsize = LSH_RL_BUFSIZE;
-  int position = 0;
-  char *buffer = malloc(sizeof(char) * bufsize);
-  int c;
-
-  if (!buffer) {
-    fprintf(stderr, "lsh: allocation error\n");
-    exit(EXIT_FAILURE);
-  }
-
-  while (1) {
-    // Read a character
-    c = getchar();
-
-    if (c == EOF) {
-      exit(EXIT_SUCCESS);
-    } else if (c == '\n') {
-      buffer[position] = '\0';
-      return buffer;
-    } else {
-      buffer[position] = c;
-    }
-    position++;
-
-    // If we have exceeded the buffer, reallocate.
-    if (position >= bufsize) {
-      bufsize += LSH_RL_BUFSIZE;
-      buffer = realloc(buffer, bufsize);
-      if (!buffer) {
-        fprintf(stderr, "lsh: allocation error\n");
-        exit(EXIT_FAILURE);
-      }
-    }
-  }
-#endif
-}
-
-#define LSH_TOK_BUFSIZE 64
-#define LSH_TOK_DELIM " \t\r\n\a"
-/**
-   @brief Split a line into tokens (very naively).
-   @param line The line.
-   @return Null-terminated array of tokens.
- */
-char **lsh_split_line(char *line)
-{
-  int bufsize = LSH_TOK_BUFSIZE, position = 0;
-  char **tokens = malloc(bufsize * sizeof(char*));
-  char *token, **tokens_backup;
-
-  if (!tokens) {
-    fprintf(stderr, "lsh: allocation error\n");
-    exit(EXIT_FAILURE);
-  }
-
-  token = strtok(line, LSH_TOK_DELIM);
-  while (token != NULL) {
-    tokens[position] = token;
-    position++;
-
-    if (position >= bufsize) {
-      bufsize += LSH_TOK_BUFSIZE;
-      tokens_backup = tokens;
-      tokens = realloc(tokens, bufsize * sizeof(char*));
-      if (!tokens) {
-		free(tokens_backup);
-        fprintf(stderr, "lsh: allocation error\n");
-        exit(EXIT_FAILURE);
-      }
-    }
-
-    token = strtok(NULL, LSH_TOK_DELIM);
-  }
-  tokens[position] = NULL;
-  return tokens;
-}
-
-/**
-   @brief Loop getting input and executing it.
- */
-void lsh_loop(void)
-{
-  char *line;
-  char **args;
-  int status;
-
-  do {
-    printf("> ");
-    line = lsh_read_line();
-    args = lsh_split_line(line);
-    status = lsh_execute(args);
-
-    free(line);
-    free(args);
-  } while (status);
-}
-
-/**
-   @brief Main entry point.
-   @param argc Argument count.
-   @param argv Argument vector.
-   @return status code
- */
-int main(int argc, char **argv)
-{
-  // Load config files, if any.
-
-  // Run command loop.
-  lsh_loop();
-
-  // Perform any shutdown/cleanup.
-
-  return EXIT_SUCCESS;
 }
