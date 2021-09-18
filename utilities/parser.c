@@ -9,6 +9,7 @@
 #include "parser.h"
 #include "execute.h"
 //int i = 1;
+char prev[LINE_LENGTH];
 char *readcmd(char initial_dir[1024])
 {
 	char *string;						  // character array pointer
@@ -28,9 +29,16 @@ char *readcmd(char initial_dir[1024])
 void writetofile(char str[LINE_LENGTH])
 {
 	FILE *fptr;
+	
 	// use appropriate location if you are using MacOS or Linux
 	fptr = fopen("history.txt", "a");
-	fprintf(fptr, "%s", str);
+	//printf("pr=%sstr=%s",prev,str);
+	if(strcmp(prev, str) != 0)
+	{
+
+		fprintf(fptr, "%s", str);
+		strcpy(prev,str);
+	}
 	//fprintf(fptr, "%s", str);
 	fclose(fptr);
 }
@@ -64,10 +72,13 @@ void history()
 	printf("\033[0;95m");
 	if (n > 20)
 	{
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < n; i++)
 		{
 			fgets(line, sizeof(line), fptr);
-			printf("%s", line);
+			if (i > n - 20)
+			{
+        		printf("%d %s", i,line);
+			}
 		}
 	}
 	else
