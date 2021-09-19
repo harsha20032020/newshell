@@ -77,7 +77,7 @@ void history()
 			fgets(line, sizeof(line), fptr);
 			if (i > n - 20)
 			{
-        		printf("%d %s", i,line);
+        		printf("%s",line);
 			}
 		}
 	}
