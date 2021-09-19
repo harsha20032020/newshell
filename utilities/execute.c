@@ -18,6 +18,7 @@
 #include "parser.h"
 #include "dirent.h"
 #include "ls.h"
+char backg[PATH_MAX];
 void temp(char *str, int i, int j)
 {
     printf("\033[1;34m");
@@ -40,7 +41,7 @@ void executioner(char *command[100], int len,char initial_dir[1024])
 {
     char currentdir[PATH_MAX];
     getcwd(currentdir, sizeof(currentdir));
-    child();
+    child(backg);
     if (strcmp(command[0], "echo") == 0)
     {
         echocommand(command, len);
@@ -170,6 +171,7 @@ void processes(char *command[100], int len)
 {
     if (command[len - 1][0] == '&')
     {
+        strcpy(backg,command[0]);
         background(command, len);
     }
     else

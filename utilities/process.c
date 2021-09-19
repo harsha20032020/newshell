@@ -62,7 +62,7 @@ void foreground(char *command[100], int len)
         } while (!WIFEXITED(status) && !WIFSIGNALED(status)); //wait until child process is done
     }
 }
-void child()
+void child(char back[PATH_MAX])
 {
     //https://stackoverflow.com/questions/4200373/just-check-status-process-in-c
     int status;
@@ -72,11 +72,11 @@ void child()
     {
         if (WIFEXITED(status))
         {
-            printf("Child with pid %d exited normally with exit code=%d\n", pid, WEXITSTATUS(status));
+            printf("Child %s with pid %d exited normally with exit code=%d\n", back,pid, WEXITSTATUS(status));
         }
         if (WIFSIGNALED(status))
         {
-            printf("Child with pid %d exited abnormally via signal %d\n", pid, WTERMSIG(status));
+            printf("Child %s with pid %d exited abnormally via signal %d\n",back, pid,WTERMSIG(status));
         }
     }
     // else if (pid > 0 && WIFSIGNALED(status))
