@@ -16,11 +16,11 @@
 #include <signal.h>
 #include "process.h"
 #include "list.h"
-int i=1;
+int i = 1;
 //int vartemp;
 void background(char *command[100], int len)
 {
-    //int vartemp;   
+    //int vartemp;
     //printf("from proc %d\n",vartemp);
     //struct node *listglobal;
     command[len - 1] = NULL;
@@ -41,7 +41,7 @@ void background(char *command[100], int len)
         }
         exit(1);
     }
-    insert_node(listglobal,command[0],"Running",pid,i,command,len);
+    insert_node(listglobal, command[0], "Running", pid, i, command, len);
     i++;
     //printf("Ran successfully\n");
 }
@@ -82,11 +82,11 @@ void child(char back[PATH_MAX])
     {
         if (WIFEXITED(status))
         {
-            printf("Child %s with pid %d exited normally with exit code=%d\n", back,pid, WEXITSTATUS(status));
+            printf("Child %s with pid %d exited normally with exit code=%d\n", back, pid, WEXITSTATUS(status));
         }
         if (WIFSIGNALED(status))
         {
-            printf("Child %s with pid %d exited abnormally via signal %d\n",back, pid,WTERMSIG(status));
+            printf("Child %s with pid %d exited abnormally via signal %d\n", back, pid, WTERMSIG(status));
         }
     }
     // else if (pid > 0 && WIFSIGNALED(status))
@@ -114,12 +114,30 @@ void terminated()
 {
     terminatedprintlist(listglobal);
 }
-void kill_process(int a,int b)
+void kill_process(int a, int b)
 {
-    int pid=find_process_by_index(listglobal,a);
-    if(pid!=-1)
+    int pid = find_process_by_index(listglobal, a);
+    if (pid != -1)
     {
-        kill(pid,b);
+        kill(pid, b);
+    }
+    else
+    {
+        printf("No such process\n");
+    }
+}
+void foreground_process(int a)
+{
+    int pid = find_process_by_index(listglobal, a);
+    if (pid != -1)
+    {
+        printf("The process is successfully converted\n");
+        pid_t wpid;
+        int status;
+        do
+        {
+            wpid = waitpid(pid, &status, WUNTRACED);
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
     }
     else
     {

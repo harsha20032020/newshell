@@ -108,6 +108,10 @@ void executioner(char *command[100], int len,char initial_dir[1024])
     {
         kill_process(atoi(command[1]),atoi(command[2]));
     }
+    else if(strcmp(command[0],"fg")==0)
+    {
+        foreground_process(atoi(command[1]));
+    }
     else
     {
         processes(command, len);

@@ -8,4 +8,5 @@ void display();
 void running();
 void terminated();
 void kill_process(int a,int b);
+void foreground_process(int a);
 #endif // !NAME#def
