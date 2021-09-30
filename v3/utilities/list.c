@@ -21,7 +21,7 @@ struct node *initialize_list()
 //         p++;
 //     }
 // }
-void statusverifier(struct node* list)
+void statusverifier(struct node *list)
 {
     int status;
     if (list == NULL)
@@ -31,16 +31,16 @@ void statusverifier(struct node* list)
     else
     {
         struct node *temp = list;
-        temp=temp->next;
+        temp = temp->next;
         while (temp != NULL)
         {
-            if(waitpid(temp->pid,&status,WNOHANG)==0)
+            if (waitpid(temp->pid, &status, WNOHANG) == 0)
             {
-                temp->status="Running";
+                temp->status = "Running";
             }
             else
             {
-                temp->status="Terminated";
+                temp->status = "Terminated";
             }
             temp = temp->next;
         }
@@ -57,22 +57,22 @@ void insert_node(struct node *list, char *process_name, char *status, int pid, i
     new_node->next = NULL;
     //printf("1:%s %s %d %d %d\n", new_node->process_name, new_node->status, new_node->pid, new_node->index, command_size);
     //printf("len=%d\n",command_size);
-    for(int i=0;i<command_size-1;i++)
+    for (int i = 0; i < command_size - 1; i++)
     {
         //new_node->command[i] = (char *)malloc(sizeof(char)*100);
         //printf("%s\n",command[i]);
-        new_node->command[i]=command[i];
-        if(i==command_size-2)
+        new_node->command[i] = command[i];
+        if (i == command_size - 2)
         {
-            new_node->command[i+1] = "&";
+            new_node->command[i + 1] = "&";
         }
     }
-    struct node *temp=list;  
-    while(temp->next!=NULL) 
+    struct node *temp = list;
+    while (temp->next != NULL)
     {
-        temp=temp->next;
+        temp = temp->next;
     }
-    temp->next=new_node;
+    temp->next = new_node;
     //print_list(list);
     // for(int i=0;i<command_size;i++)
     // {
@@ -109,7 +109,7 @@ void delete_node(struct node *list, int pid)
         }
     }
 }
-void find_process_by_pid(struct node *list, int pid)
+int find_process_by_index(struct node *list, int index)
 {
     if (list == NULL)
     {
@@ -118,18 +118,17 @@ void find_process_by_pid(struct node *list, int pid)
     else
     {
         struct node *temp = list;
-        struct node *prev = NULL;
-        while (temp != NULL && temp->pid != pid)
+        temp = temp->next;
+        while (temp != NULL)
         {
-            prev = temp;
+            if (temp->index == index)
+            {
+                return temp->pid;
+            }
             temp = temp->next;
         }
-        printf("%d\n", temp->pid);
-        if (temp == NULL)
-        {
-            printf("No such process\n");
-        }
     }
+    return -1;
 }
 void print_list(struct node *list)
 {
@@ -141,22 +140,88 @@ void print_list(struct node *list)
     else
     {
         struct node *temp = list;
-        temp=temp->next;
+        temp = temp->next;
         while (temp != NULL)
         {
-            printf("[%d] %s ",temp->index,temp->status);
-            for(int i=0;i<100;i++)
+            printf("[%d] %s ", temp->index, temp->status);
+            for (int i = 0; i < 100; i++)
             {
-                if(temp->command[i]!=NULL && temp->command[i][0]!='&')
+                if (temp->command[i] != NULL && temp->command[i][0] != '&')
                 {
-                    printf("%s ",temp->command[i]);
+                    printf("%s ", temp->command[i]);
                 }
                 else
                 {
                     break;
                 }
             }
-            printf("[%d]\n",temp->pid);
+            printf("[%d]\n", temp->pid);
+            temp = temp->next;
+        }
+    }
+}
+void runningprintlist(struct node *list)
+{
+    statusverifier(list);
+    if (list == NULL)
+    {
+        printf("List is empty\n");
+    }
+    else
+    {
+        struct node *temp = list;
+        temp = temp->next;
+        while (temp != NULL)
+        {
+            if (strcmp(temp->status, "Running") == 0)
+            {
+                printf("[%d] %s ", temp->index, temp->status);
+                for (int i = 0; i < 100; i++)
+                {
+                    if (temp->command[i] != NULL && temp->command[i][0] != '&')
+                    {
+                        printf("%s ", temp->command[i]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                printf("[%d]\n", temp->pid);
+            }
+            temp = temp->next;
+        }
+    }
+}
+void terminatedprintlist(struct node *list)
+{
+    statusverifier(list);
+    if (list == NULL)
+    {
+        printf("List is empty\n");
+    }
+    else
+    {
+        struct node *temp = list;
+        temp = temp->next;
+        while (temp != NULL)
+        {
+            if (strcmp(temp->status, "Terminated") == 0)
+            {
+                printf("[%d] %s ", temp->index, temp->status);
+                for (int i = 0; i < 100; i++)
+                {
+                    if (temp->command[i] != NULL && temp->command[i][0] != '&')
+                    {
+                        printf("%s ", temp->command[i]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                printf("[%d]\n", temp->pid);
+            }
             temp = temp->next;
         }
     }

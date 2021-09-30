@@ -13,8 +13,10 @@ extern struct node *listglobal;
 struct node  *initialize_list();
 void insert_node(struct node *list, char *process_name, char *status, int pid, int index, char *command[100], int command_size);
 void delete_node(struct node *list, int pid);
-void find_process_by_pid(struct node *list, int pid);
+int find_process_by_index(struct node *list, int index);
 void print_list(struct node *list);
 void statusverifier(struct node* list);
+void terminatedprintlist(struct node *list);
+void runningprintlist(struct node *list);
 //extern int vartemp;
 #endif 

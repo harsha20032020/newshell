@@ -105,4 +105,24 @@ void display()
 {
     print_list(listglobal);
 }
+void running()
+{
+    runningprintlist(listglobal);
+}
+void terminated()
+{
+    terminatedprintlist(listglobal);
+}
+void kill_process(int a,int b)
+{
+    int pid=find_process_by_index(listglobal,a);
+    if(pid!=-1)
+    {
+        kill(pid,b);
+    }
+    else
+    {
+        printf("No such process\n");
+    }
+}
 // idk why but looks and runs perfect ig

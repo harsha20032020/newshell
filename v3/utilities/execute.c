@@ -83,7 +83,30 @@ void executioner(char *command[100], int len,char initial_dir[1024])
     }
     else if (strcmp(command[0],"jobs")==0)
     {
-        display();
+        //printf("%d\n",len);
+        if(len==2)
+        {
+            if(strcmp(command[1],"-r")==0)
+            {
+                running();
+            }
+            else if(strcmp(command[1],"-s")==0)
+            {
+                terminated();
+            }
+            else
+            {
+                printf("Enter A Valid Flag\n");
+            }
+        }
+        else
+        {
+            display();
+        }
+    }
+    else if(strcmp(command[0],"sig")==0)
+    {
+        kill_process(atoi(command[1]),atoi(command[2]));
     }
     else
     {
