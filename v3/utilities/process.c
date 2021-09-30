@@ -26,6 +26,7 @@ void background(char *command[100], int len)
     command[len - 1] = NULL;
     pid_t pid, newpid;
     pid = fork();
+    setpgid(0, 0);
     if (pid != 0)
     {
         printf("%d\n", pid);
