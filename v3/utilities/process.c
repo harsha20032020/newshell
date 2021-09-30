@@ -42,7 +42,7 @@ void background(char *command[100], int len)
     }
     insert_node(listglobal,command[0],"Running",pid,i,command,len);
     i++;
-    printf("Ran successfully\n");
+    //printf("Ran successfully\n");
 }
 void foreground(char *command[100], int len)
 {
@@ -100,5 +100,9 @@ void child(char back[PATH_MAX])
     // {
     //     fprintf(stderr, "pid %d continued\n", pid);
     // }
+}
+void display()
+{
+    print_list(listglobal);
 }
 // idk why but looks and runs perfect ig

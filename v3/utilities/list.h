@@ -15,5 +15,6 @@ void insert_node(struct node *list, char *process_name, char *status, int pid, i
 void delete_node(struct node *list, int pid);
 void find_process_by_pid(struct node *list, int pid);
 void print_list(struct node *list);
+void statusverifier(struct node* list);
 //extern int vartemp;
 #endif 

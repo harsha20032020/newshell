@@ -81,6 +81,10 @@ void executioner(char *command[100], int len,char initial_dir[1024])
     {
         lscommand(command, len, initial_dir);
     }
+    else if (strcmp(command[0],"jobs")==0)
+    {
+        display();
+    }
     else
     {
         processes(command, len);
