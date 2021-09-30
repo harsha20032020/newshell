@@ -13,14 +13,17 @@
 #include "./utilities/execute.h"
 #include "./utilities/ls.h"
 #include "./utilities/list.h"
-//extern struct node **list;
+struct node *listglobal;
+//int vartemp;
 int main()
 {
     //printdir();
     char initial_dir[1024];
     getcwd(initial_dir, sizeof(initial_dir));
     int initiallen = strlen(initial_dir);
-    //list=initialize_list();
+    listglobal=initialize_list();
+    // vartemp=100;
+    // printf("%d\n",vartemp);
     while (1)
     {
         //printf("%s\n", initial_dir);

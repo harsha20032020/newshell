@@ -17,8 +17,12 @@
 #include "process.h"
 #include "list.h"
 int i=1;
+//int vartemp;
 void background(char *command[100], int len)
 {
+    //int vartemp;   
+    //printf("from proc %d\n",vartemp);
+    //struct node *listglobal;
     command[len - 1] = NULL;
     pid_t pid, newpid;
     pid = fork();
@@ -36,9 +40,9 @@ void background(char *command[100], int len)
         }
         exit(1);
     }
-    //insert_node(list,command[0],"Running",pid,i,command,len);
+    insert_node(listglobal,command[0],"Running",pid,i,command,len);
     i++;
-    printf("Ran fine\n");
+    printf("Ran successfully\n");
 }
 void foreground(char *command[100], int len)
 {
