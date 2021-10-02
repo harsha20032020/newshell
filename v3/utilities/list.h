@@ -18,5 +18,6 @@ void print_list(struct node *list);
 void statusverifier(struct node* list);
 void terminatedprintlist(struct node *list);
 void runningprintlist(struct node *list);
+struct node *find_process_struc(struct node *list, int index);
 //extern int vartemp;
 #endif 

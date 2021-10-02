@@ -112,6 +112,10 @@ void executioner(char *command[100], int len,char initial_dir[1024])
     {
         foreground_process(atoi(command[1]));
     }
+    else if(strcmp(command[0],"bg")==0)
+    {
+        background_process(atoi(command[1]));
+    }
     else
     {
         processes(command, len);

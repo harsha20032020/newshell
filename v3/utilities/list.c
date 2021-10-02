@@ -1,10 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <stdbool.h>
-#include <string.h>
-#include <sys/types.h>
 #include <sys/wait.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
 #include "list.h"
 struct node *initialize_list()
 {
@@ -21,6 +21,10 @@ struct node *initialize_list()
 //         p++;
 //     }
 // }
+// void getStatus(int pid,char *status)
+// {
+
+// }
 void statusverifier(struct node *list)
 {
     int status;
@@ -32,16 +36,42 @@ void statusverifier(struct node *list)
     {
         struct node *temp = list;
         temp = temp->next;
+        //getStatus(temp->pid, temp->status);
         while (temp != NULL)
         {
-            if (waitpid(temp->pid, &status, WNOHANG) == 0)
+            int pid = temp->pid;
+            char path[50];
+            int proc;
+            char stat;
+            char *process_status;
+            sprintf(path, "/proc/%d/stat", pid);
+            FILE *filepointer = fopen(path, "r");
+
+            if (filepointer == NULL)
             {
-                temp->status = "Running";
+                //printf("No status File, no process with pid %d.\n", pid);
+                process_status="Terminated";
+                //return;
             }
             else
             {
-                temp->status = "Terminated";
+                sprintf(path, "/proc/%d/stat", pid);
+                fscanf(filepointer, "%d %*s %c", &proc, &stat);
+                
+                if (stat == 'R')
+                {
+                    process_status = "Running";
+                }
+                else if (stat == 'S')
+                {
+                    process_status = "Sleeping";
+                }
+                else if (stat == 'Z')
+                {
+                    process_status = "Zombie";
+                }
             }
+            temp->status = process_status;
             temp = temp->next;
         }
     }
@@ -225,4 +255,25 @@ void terminatedprintlist(struct node *list)
             temp = temp->next;
         }
     }
+}
+struct node *find_process_struc(struct node *list, int index)
+{
+    if (list == NULL)
+    {
+        printf("List is empty\n");
+    }
+    else
+    {
+        struct node *temp = list;
+        temp = temp->next;
+        while (temp != NULL)
+        {
+            if (temp->index == index)
+            {
+                return temp;
+            }
+            temp = temp->next;
+        }
+    }
+    return list;
 }

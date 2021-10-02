@@ -144,4 +144,28 @@ void foreground_process(int a)
         printf("No such process\n");
     }
 }
+void background_process(int a)
+{
+    int pid = find_process_by_index(listglobal, a);
+    if (pid != -1)
+    {
+        struct node* temp=find_process_struc(listglobal,a);
+        printf("Here %s %d %d\n",temp->status,temp->pid,temp->index);
+        if(strcmp(temp->status,"Running")==0)
+        {
+            printf("The process is already running\n");
+        }
+        else
+        {
+            temp->status="Running";
+            printf("This Bloc ran %s\n",temp->status);
+            //kill(pid, SIGTTIN);
+			kill(pid, SIGCONT);
+        }
+    }
+    else
+    {
+        printf("No such process\n");
+    }
+}
 // idk why but looks and runs perfect ig
