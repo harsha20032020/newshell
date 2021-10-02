@@ -7,12 +7,14 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <limits.h>
+#include <signal.h>
 #define LINE_LENGTH 1024
 #include "./utilities/name.h"
 #include "./utilities/parser.h"
 #include "./utilities/execute.h"
 #include "./utilities/ls.h"
 #include "./utilities/list.h"
+#include "./utilities/signals.h"
 struct node *listglobal;
 //int vartemp;
 int main()
@@ -27,6 +29,8 @@ int main()
     while (1)
     {
         //printf("%s\n", initial_dir);
+        signal(SIGINT, ctrlC);
+        //signal(SIGINT, handle_sigint);
         usleep(1e5);
         username(initiallen,initial_dir); //prints the default prompt message
         readcmd(initial_dir);
