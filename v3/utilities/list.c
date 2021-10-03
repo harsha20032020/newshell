@@ -70,6 +70,14 @@ void statusverifier(struct node *list)
                 {
                     process_status = "Zombie";
                 }
+                else if (stat=='T')
+                {
+                    process_status="Stopped";
+                }
+                else if (stat=='D')
+                {
+                    process_status="Uninterruptible";
+                }
             }
             temp->status = process_status;
             temp = temp->next;
