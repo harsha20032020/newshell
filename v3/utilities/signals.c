@@ -46,8 +46,8 @@ void ctrlZ()
             temp = temp->next;
         }
 
-		// kill(getpid(), SIGSTOP);
-		// kill(getpid(), SIGCONT);
+		kill(getpid(), SIGSTOP);
+		kill(getpid(), SIGCONT);
 	}
 	//signal(SIGTSTP, ctrlZ);
 }

@@ -304,7 +304,7 @@ void bubbleSort(struct node *start)
   
         while (ptr1->next != lptr)
         {
-            if (ptr1->process_name > ptr1->next->process_name)
+            if (ptr1->process_name < ptr1->next->process_name)
             {
                 swap(ptr1, ptr1->next);
                 swapped = 1;
@@ -332,29 +332,29 @@ void swap(struct node *a, struct node *b)
     temp->status = a->status;
     temp->pid = a->pid;
     //temp->command = a->command;
-    for(int i=0;i<100;i++)
-    {
-        temp->command[i] = a->command[i];
-    }
+    // for(int i=0;i<100;i++)
+    // {
+    //     temp->command[i] = a->command[i];
+    // }
     //temp->next = a->next;
     a->index = b->index;
     a->process_name = b->process_name;
     a->status = b->status;
     a->pid = b->pid;
     //a->command = b->command;
-    for(int i=0;i<100;i++)
-    {
-        a->command[i] = b->command[i];
-    }
+    // for(int i=0;i<100;i++)
+    // {
+    //     a->command[i] = b->command[i];
+    // }
     //a->next = b->next;
     b->index = temp->index;
     b->process_name = temp->process_name;
     b->status = temp->status;
     b->pid = temp->pid;
     //b->command = temp->command;
-    for(int i=0;i<100;i++)
-    {
-        b->command[i] = temp->command[i];
-    }
+    // for(int i=0;i<100;i++)
+    // {
+    //     b->command[i] = temp->command[i];
+    // }
     //b->next = temp->next;
 }
