@@ -157,8 +157,8 @@ void background_process(int a)
         }
         else
         {
-            temp->status="Running";
-            printf("This Bloc ran %s\n",temp->status);
+            // temp->status="Running";
+            // printf("This Bloc ran %s\n",temp->status);
             //kill(pid, SIGTTIN);
 			kill(pid, SIGCONT);
         }

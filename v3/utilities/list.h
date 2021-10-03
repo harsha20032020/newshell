@@ -19,5 +19,8 @@ void statusverifier(struct node* list);
 void terminatedprintlist(struct node *list);
 void runningprintlist(struct node *list);
 struct node *find_process_struc(struct node *list, int index);
+void swap(struct node *a, struct node *b);
+void bubbleSort(struct node *start);
+
 //extern int vartemp;
 #endif 

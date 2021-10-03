@@ -30,6 +30,7 @@ int main()
     {
         //printf("%s\n", initial_dir);
         signal(SIGINT, ctrlC);
+        signal(SIGTSTP, ctrlZ);
         //signal(SIGINT, handle_sigint);
         usleep(1e5);
         username(initiallen,initial_dir); //prints the default prompt message
