@@ -19,8 +19,10 @@ char *readcmd(char initial_dir[1024])
 	size_t characters = getline(string_pointer, &size, stdin);
 	if (characters == -1)
 	{
-		printf("Error. Please give input correctly.");
-		return readcmd(initial_dir);
+		printf("\n");
+		exit(1);
+		//printf("Error. Please give input correctly.");
+		//return readcmd(initial_dir);
 	}
 	writetofile(string);
 	stringsplitter(string, initial_dir);
