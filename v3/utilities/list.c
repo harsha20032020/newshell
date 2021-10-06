@@ -170,7 +170,7 @@ int find_process_by_index(struct node *list, int index)
 }
 void print_list(struct node *list)
 {
-    bubbleSort(list);
+    //bubbleSort(list);
     statusverifier(list);
     if (list == NULL)
     {
