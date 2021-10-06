@@ -60,7 +60,7 @@ void foreground(char *command[100], int len)
         //printf("%d\n", newpid);
         if (execvp(command[0], command) == -1) //command[0] is the name of the program
         {
-            perror("Error At Background Processes");
+            perror("Error At Foreground Processes");
         }
         exit(1);
     }
@@ -150,7 +150,7 @@ void background_process(int a)
     if (pid != -1)
     {
         struct node* temp=find_process_struc(listglobal,a);
-        printf("Here %s %d %d\n",temp->status,temp->pid,temp->index);
+        //printf("Here %s %d %d\n",temp->status,temp->pid,temp->index);
         if(strcmp(temp->status,"Running")==0)
         {
             printf("The process is already running\n");
@@ -159,7 +159,7 @@ void background_process(int a)
         {
             // temp->status="Running";
             // printf("This Bloc ran %s\n",temp->status);
-            //kill(pid, SIGTTIN);
+            kill(pid, SIGTTIN);
 			kill(pid, SIGCONT);
         }
     }

@@ -287,46 +287,37 @@ struct node *find_process_struc(struct node *list, int index)
     return list;
 }
 
-void bubbleSort(struct node *start)
-{
-    int swapped, i;
-    struct node *ptr1;
-    struct node *lptr = NULL;
-  
-    /* Checking for empty list */
-    if (start == NULL)
-        return;
-  
-    do
-    {
-        swapped = 0;
-        ptr1 = start;
-  
-        while (ptr1->next != lptr)
-        {
-            if (ptr1->process_name < ptr1->next->process_name)
-            {
-                swap(ptr1, ptr1->next);
-                swapped = 1;
-            }
-            { 
-                swap(ptr1, ptr1->next);
-                swapped = 1;
-            }
-            ptr1 = ptr1->next;
-        }
-        lptr = ptr1;
-    }
-    while (swapped);
-}
-  
+// void bubbleSort(struct node *start)
+// {
+//     int i = 0;
+//     printf("hello1\n");
+//     struct node *temp = start;
+//     while (i < 26)
+//     {
+//         printf("hello2 %d\n",i);
+//         while (temp != NULL)
+//         {
+//             printf("hello3 %d\n",i);
+//             char c = temp->process_name;
+//             printf("hello4 %d\n",c);
+//             if (c - i == 0)
+//             {
+//                 printf("hello3 %d %d\n",i,c);
+//                 printf("%s\n", temp->process_name);
+//             }
+//             temp=temp->next;
+//         }
+//         i++;
+//     }
+// }
+
 /* function to swap data of two nodes a and b*/
 void swap(struct node *a, struct node *b)
 {
     // int temp = a->data;
     // a->data = b->data;
     // b->data = temp;
-    struct node *temp;   
+    struct node *temp;
     temp->index = a->index;
     temp->process_name = a->process_name;
     temp->status = a->status;

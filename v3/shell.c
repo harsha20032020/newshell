@@ -32,6 +32,8 @@ int main()
         signal(SIGINT, ctrlC);
         signal(SIGTSTP, ctrlZ);
         //signal(SIGINT, handle_sigint);
+        int x=dup(0);
+        int y=dup(1);
         usleep(1e5);
         username(initiallen,initial_dir); //prints the default prompt message
         readcmd(initial_dir);
@@ -40,5 +42,9 @@ int main()
         //splitcommands(string);
         //printf("%s\n", path);
         //printpath();
+        dup2(x,0);
+        dup2(y,1);
+        close(x);
+        close(y);
     }
 }

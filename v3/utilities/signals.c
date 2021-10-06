@@ -33,21 +33,10 @@ void ctrlZ()
 
 	if (getpid() != getppid() && getpid() != 0)
 	{
-		struct node *temp = listglobal;
-        while (temp != NULL)
-        {
-            if (temp->pid == getpid())
-            {
-                fprintf(stdout, "Sending SIGSTOP to %d.\n", temp->pid);
-                //kill(temp->pid, SIGTSTP);
-                temp->status="Sleeping";
-                break;
-            }
-            temp = temp->next;
-        }
-
-		kill(getpid(), SIGSTOP);
-		kill(getpid(), SIGCONT);
+		char *command[100]={"Fore","to","back"};
+		insert_node(listglobal,"Foretoback","Running",getpid(),0,command,1);
+		kill(getpid(), SIGTTIN);
+		kill(getpid(), SIGTSTP);
 	}
-	//signal(SIGTSTP, ctrlZ);
+	signal(SIGTSTP, ctrlZ);
 }
