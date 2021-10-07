@@ -1,6 +1,20 @@
 #ifndef PARSER_H
 #define PARSER_H
 #define LINE_LENGTH 1024
+struct temp {
+    char *comms[25];
+    int len;
+};
+struct commandlists{
+    struct temp *commands[25];
+    int len;
+    int flg;
+    int blg;   
+    char *target;
+};
+void pipexecutioner(struct commandlists* comms, char initial_dir[1024]);
+void parserpiper(char *str, struct commandlists *comms);
+void pipes(char *str, char initial_dir[1024]);
 char *readcmd(char initial_dir[1024]);
 void writetofile(char str[LINE_LENGTH]);
 void stringsplitter(char str[LINE_LENGTH], char initial_dir[1024]);
