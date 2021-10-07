@@ -212,7 +212,7 @@ void runningprintlist(struct node *list)
         temp = temp->next;
         while (temp != NULL)
         {
-            if (strcmp(temp->status, "Running") == 0)
+            if (strcmp(temp->status, "Terminated") != 0)
             {
                 printf("[%d] %s ", temp->index, temp->status);
                 for (int i = 0; i < 100; i++)

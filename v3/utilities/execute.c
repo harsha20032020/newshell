@@ -116,6 +116,10 @@ void executioner(char *command[100], int len,char initial_dir[1024])
     {
         background_process(atoi(command[1]));
     }
+    else if(strcmp(command[0],"replay")==0)
+    {
+        replay(command,len,initial_dir);
+    }
     else
     {
         processes(command, len);
@@ -329,4 +333,52 @@ void pinfo2(int pid)
     {
         perror("Please check process pid");
     }
+}
+void replay(char *command[100],int len,char initial_dir[1024])
+{
+    char *newstring[100];
+    int p=0;
+    int interval,period;  
+    //printf("Ran\n");
+    for(int i=0;i<len;i++)
+    {
+        if(strcmp(command[i],"replay")==0 || strcmp(command[i],"-command")==0)
+        {
+            //command[i]=NULL;
+        }
+        else if(strcmp(command[i],"-interval")==0)
+        {
+            //command[i]=NULL;
+            interval=atoi(command[i+1]);
+            i++;
+            //command[i+1]=NULL;
+        }
+        else if(strcmp(command[i],"-period")==0)
+        {
+            //command[i]=NULL;
+            period=atoi(command[i+1]);
+            i++;
+            //command[i+1]=NULL;
+        }
+        else
+        {
+            //printf("%s\n",command[i]);
+            newstring[p]=command[i];
+            p++;
+        }
+    }
+    for(int i=0;i<(period/interval);i++)
+    {
+        sleep(interval);
+        executioner(newstring,p,initial_dir);
+    }
+    // for(int i=0;i<len;i++)
+    // {
+    //     if(command[i]!=NULL)
+    //     {
+    //         printf("%s ",command[i]);
+    //     }
+    // }
+    //printf("interval = %d\n",interval);
+    //printf("period = %d\n",period);
 }

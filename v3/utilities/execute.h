@@ -11,4 +11,5 @@ void pinfo();
 void pinfo2(int pid);
 void lscommand(char *commands[100], int len, char *initial_dir);
 int flaggerfunc(char *tokens[100],int len);
+void replay(char *command[100],int len,char initial_dir[1024]);
 #endif // !NAME#def
