@@ -66,10 +66,13 @@ void foreground(char *command[100], int len)
     }
     else
     {
-        do
+
+        waitpid(pid, &status, WUNTRACED|WCONTINUED); //wait for child process to finish
+        if(WTERMSIG(status)==127)
         {
-            waitpid(pid, &status, WUNTRACED);                 //wait for child process to finish
-        } while (!WIFEXITED(status) && !WIFSIGNALED(status)); //wait until child process is done
+            insert_node(listglobal, command[0], "Terminated", pid, i, command, len);
+        }
+        tcsetpgrp(0, getpgrp());
     }
 }
 void child(char back[PATH_MAX])
@@ -149,9 +152,9 @@ void background_process(int a)
     int pid = find_process_by_index(listglobal, a);
     if (pid != -1)
     {
-        struct node* temp=find_process_struc(listglobal,a);
+        struct node *temp = find_process_struc(listglobal, a);
         //printf("Here %s %d %d\n",temp->status,temp->pid,temp->index);
-        if(strcmp(temp->status,"Running")==0)
+        if (strcmp(temp->status, "Running") == 0)
         {
             printf("The process is already running\n");
         }
@@ -160,7 +163,7 @@ void background_process(int a)
             // temp->status="Running";
             // printf("This Bloc ran %s\n",temp->status);
             kill(pid, SIGTTIN);
-			kill(pid, SIGCONT);
+            kill(pid, SIGCONT);
         }
     }
     else

@@ -182,7 +182,7 @@ void print_list(struct node *list)
         temp = temp->next;
         while (temp != NULL)
         {
-            printf("[%d] %s ", temp->index, temp->status);
+            printf("[%d] %s ", temp->index, temp->process_name);
             for (int i = 0; i < 100; i++)
             {
                 if (temp->command[i] != NULL && temp->command[i][0] != '&')
@@ -194,7 +194,7 @@ void print_list(struct node *list)
                     break;
                 }
             }
-            printf("[%d]\n", temp->pid);
+            printf("%s [%d]\n",temp->status ,temp->pid);
             temp = temp->next;
         }
     }

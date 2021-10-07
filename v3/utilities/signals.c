@@ -26,17 +26,17 @@ void ctrlC()
 void ctrlZ()
 {
     printf("ctrlz triggered\n");
-    printf("%d %d\n",getpid(),getppid());
-	if (getpid() != getppid())
-		return;
-	printf("%d,%d\n", getppid(), getpid());
+    // printf("%d %d\n",getpid(),getppid());
+	// if (getpid() != getppid())
+	// 	return;
+	// printf("%d,%d\n", getppid(), getpid());
 
-	if (getpid() != getppid() && getpid() != 0)
-	{
-		char *command[100]={"Fore","to","back"};
-		insert_node(listglobal,"Foretoback","Running",getpid(),0,command,1);
-		kill(getpid(), SIGTTIN);
-		kill(getpid(), SIGTSTP);
-	}
-	signal(SIGTSTP, ctrlZ);
+	// if (getpid() != getppid() && getpid() != 0)
+	// {
+	// 	char *command[100]={"Fore","to","back"};
+	// 	insert_node(listglobal,"Foretoback","Running",getpid(),0,command,1);
+	// 	kill(getpid(), SIGTTIN);
+	// 	kill(getpid(), SIGTSTP);
+	// }
+	// signal(SIGTSTP, ctrlZ);
 }
