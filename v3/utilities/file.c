@@ -41,6 +41,11 @@ int fileio(char *command[100], int limit,char initial_dir[1024])
 		}
 		i++;
 	}
+	if(dir==0)
+	{
+		executioner(command,limit,initial_dir);
+	}
+	executioner(command,limit,initial_dir);
 	return total;
 }
 void inputio(char *command[100], int limit, int n,char initial_dir[1024])
@@ -55,6 +60,7 @@ void inputio(char *command[100], int limit, int n,char initial_dir[1024])
 	{
 		perror("File opening failed");
 	}
+	close(0);
 	if (dup2(fd1, 0) == -1)
 	{
 		perror("File Descriptor Duplication failed");
@@ -64,7 +70,7 @@ void inputio(char *command[100], int limit, int n,char initial_dir[1024])
 	// {
 	// 	printf("%d %s\n",i,command[i]);
 	// }
-	executioner(command,limit,initial_dir);
+	//executioner(command,limit,initial_dir);
 }
 void outputio(char *command[100],int limit,int n,int flg,char initial_dir[1024])
 {
