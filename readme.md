@@ -7,7 +7,6 @@ make
 ./a.out
 ```
 The 
-```
 [Shell.c](./shell.c)  :  Is the main file which has the main function.
 The utilities folder contains all the utility files and functions.
 [Execute.c](./utilities/execute.c) : Contains logic for the categorization of inputs and various other commands like cd , echo , repeat and also a helper functions to other commands.
@@ -18,6 +17,5 @@ The utilities folder contains all the utility files and functions.
 [signals.c](./utilities/signals.c): contains the appropriate code for signal handling.
 [file.c](./utilities/file.c): contains function for I/O file redirections.
 [list.c](./utilities/list.c): contains function for manipulation of linked lists used for jobs.
-```
 
 This shell in entirety can run various bash commands and even custom made commands like replay(runs a command after a specific interval usage format : "replay -command echo "hi" -interval 3 -period 6"), pinfo which returns the deatils of the process and many more.This shell also supports file redirection and Piping. 
